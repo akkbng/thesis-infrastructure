@@ -22,6 +22,10 @@ provider "google" {
 }
 
 provider "helm" {
+  experiments {
+    manifest = true
+  }
+  
   kubernetes {
     host                   = "https://${google_container_cluster.primary.endpoint}"
     token                  = data.google_client_config.default.access_token
