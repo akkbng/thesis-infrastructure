@@ -35,7 +35,7 @@ default:
   #  - name: OTEL_K8S_NODE_NAME
   #    value: "someConstantValue"
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/akkbng/opentelemetry-astronomy-shop
     # Overrides the image tag whose default is the chart appVersion.
     # The service's name will be applied to the end of this value.
     tag: ""
