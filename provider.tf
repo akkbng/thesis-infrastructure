@@ -10,10 +10,11 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.5.1"
+      version = "2.9.0"
     }
   }
 }
+data "google_client_config" "default" {}
 
 provider "google" {
   project     = var.project_name
