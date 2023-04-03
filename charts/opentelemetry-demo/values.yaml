@@ -644,6 +644,7 @@ opentelemetry-collector:
           exporters: [prometheus, logging]
 
 jaeger:
+  tag: 1.42.0
   provisionDataStore:
     cassandra: false
   allInOne:
