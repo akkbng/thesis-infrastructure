@@ -33,9 +33,6 @@
     "components": {
       "$ref": "#/definitions/Components"
     },
-    "observability": {
-      "$ref": "#/definitions/Observability"
-    },
     "opentelemetry-collector": {
       "type": "object"
     },
@@ -51,7 +48,6 @@
   },
   "required": [
     "components",
-    "observability",
     "serviceAccount"
   ],
   "definitions": {
@@ -171,7 +167,7 @@
           "type": "object"
         },
         "livenessProbe": {
-          "type": "object"
+          "$ref": "#/definitions/LivenessProbe"
         },
         "schedulingRules": {
           "$ref": "#/definitions/SchedulingRules"
@@ -183,10 +179,24 @@
           "$ref": "#/definitions/ContainerResources"
         },
         "securityContext": {
-          "type": "object"
+          "$ref": "#/definitions/SecurityContext"
         },
         "ingress": {
           "$ref": "#/definitions/Ingress"
+        },
+        "initContainers": {
+          "type": "array",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            },
+            "command": {
+              "type": "object"
+            }
+          }
         }
       },
       "required": [
@@ -372,53 +382,6 @@
         "value"
       ],
       "title": "Port"
-    },
-    "Observability": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "otelcol": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
-          }
-        },
-        "jaeger": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
-          }
-        },
-        "prometheus": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
-          }
-        },
-        "grafana": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
-          }
-        }
-      },
-      "required": [
-        "jaeger",
-        "otelcol"
-      ],
-      "title": "Observability"
     },
     "Image": {
       "type": "object",
@@ -639,6 +602,135 @@
       "required": [
         "enabled"
       ]
+    },
+    "SecurityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowPrivilegeEscalation": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "drop": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "privileged": {
+          "type": "boolean"
+        },
+        "procMount": {
+          "type": "string"
+        },
+        "readOnlyRootFilesystem": {
+          "type": "boolean"
+        },
+        "runAsGroup": {
+          "type": "integer"
+        },
+        "runAsNonRoot": {
+          "type": "boolean"
+        },
+        "runAsUser": {
+          "type": "integer"
+        },
+        "seLinuxOptions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "level": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "user": {
+              "type": "string"
+            }
+          },
+          "privileged": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "LivenessProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "httpGet"
+      ],
+      "properties": {
+        "httpGet": {
+          "type": "object",
+          "required": [
+            "port"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "host": {
+              "type": "string"
+            },
+            "scheme": {
+              "type": "string"
+            },
+            "httpHeaders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "port": {
+              "type": "integer"
+            }
+          }
+        },
+        "initialDelaySeconds": {
+          "type": "integer"
+        },
+        "timeoutSeconds": {
+          "type": "integer"
+        },
+        "periodSeconds": {
+          "type": "integer"
+        },
+        "successThreshold": {
+          "type": "integer"
+        },
+        "failureThreshold": {
+          "type": "integer"
+        }
+      }
     }
   }
 }
