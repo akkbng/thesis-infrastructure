@@ -5,11 +5,8 @@ in kubernetes cluster.
 
 ## Prerequisites
 
-- Kubernetes 1.23+
+- Kubernetes 1.24+
 - Helm 3.9+
-
-Since the OpenTelemetry demo does not build images targeting arm64 architecture **the chart is not supported in clusters running on
-arm64 architectures**, such as kind/minikube running on Apple Silicon.
 
 ## Installing the Chart
 
@@ -28,6 +25,43 @@ helm install my-otel-demo open-telemetry/opentelemetry-demo
 ## Upgrading
 
 See [UPGRADING.md](UPGRADING.md).
+
+## OpenShift
+
+Installing the chart on OpenShift requires the following additional steps:
+
+1. Create a new project:
+
+```console
+oc new-project opentelemetry-demo
+```
+
+2. Create a new service account:
+
+```console
+oc create sa opentelemetry-demo
+```
+
+3. Add the service account to the `anyuid` SCC (may require cluster admin):
+
+```console
+oc adm policy add-scc-to-user anyuid -z opentelemetry-demo
+```
+
+4. Install the chart with the following command:
+
+```console
+helm install my-otel-demo charts/opentelemetry-demo \
+    --namespace opentelemetry-demo \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=opentelemetry-demo \
+    --set prometheus.rbac.create=false \
+    --set prometheus.serviceAccounts.server.create=false \
+    --set prometheus.serviceAccounts.server.name=opentelemetry-demo \
+    --set grafana.rbac.create=false \
+    --set grafana.serviceAccount.create=false \
+    --set grafana.serviceAccount.name=opentelemetry-demo
+```
 
 ## Chart Parameters
 
@@ -53,8 +87,8 @@ the demo
 | `default.schedulingRules.tolerations`  | Tolerations for pod assignment                                                            | `[]`                                                 |
 | `default.securityContext`              | Demo components container security context                                                | `{}`                                                 |
 | `serviceAccount.annotations`           | Annotations for the serviceAccount                                                        | `{}`                                                 |
-| `serviceAccount.create`                | Wether to create a serviceAccount or use an existing one                                  | `true`                                            |
-| `serviceAccount.name`                  | The name of the ServiceAccount to use for demo components                                 | `""`                                              |
+| `serviceAccount.create`                | Whether to create a serviceAccount or use an existing one                                 | `true`                                               |
+| `serviceAccount.name`                  | The name of the ServiceAccount to use for demo components                                 | `""`                                                 |
 
 ### Component parameters
 
@@ -101,15 +135,10 @@ component.
 | `ingress.additionalIngresses[].name` | Each additional ingress rule needs to have a unique name                                                   | `nil`                                                         |
 | `command`                            | Command & arguments to pass to the container being spun up for this service                                | `[]`                                                          |
 | `configuration`                      | Configuration for the container being spun up; will create a ConfigMap, Volume and VolumeMount             | `{}`                                                          |
-
-### Observability parameters
-
-| Parameter                          | Description                                   | Default |
-|------------------------------------|-----------------------------------------------|---------|
-| `observability.otelcol.enabled`    | Enables the OpenTelemetry Collector sub-chart | `true`  |
-| `observability.jaeger.enabled`     | Enables the Jaeger sub-chart                  | `true`  |
-| `observability.prometheus.enabled` | Enables the Prometheus sub-chart              | `true`  |
-| `observability.grafana.enabled`    | Enables the Grafana sub-chart                 | `true`  |
+| `initContainers`                     | Array of init containers to add to the pod                                                                 | `[]`                                                          |
+| `initContainers[].name`              | Name of the init container                                                                                 | `nil`                                                         |
+| `initContainers[].image`             | Image to use for the init container                                                                        | `nil`                                                         |
+| `initContainers[].command`           | Command to run for the init container                                                                      | `nil`                                                         |
 
 ### Sub-charts
 
@@ -130,6 +159,7 @@ parameters by default. The overriden parameters are specified below.
 
 | Parameter        | Description                                        | Default                                                  |
 |------------------|----------------------------------------------------|----------------------------------------------------------|
+| `enabled`        | Install the OpenTelemetry collector                | `true`                                                   |
 | `nameOverride`   | Name that will be used by the sub-chart release    | `otelcol`                                                |
 | `mode`           | The Deployment or Daemonset mode                   | `deployment`                                             |
 | `resources`      | CPU/Memory resource requests/limits                | 100Mi memory limit                                       |
@@ -145,6 +175,7 @@ parameters by default. The overriden parameters are specified below.
 
 | Parameter                      | Description                                        | Default                                                               |
 |--------------------------------|----------------------------------------------------|-----------------------------------------------------------------------|
+| `enabled`                      | Install the Jaeger sub-chart                       | `true`                                                                |
 | `provisionDataStore.cassandra` | Provision a cassandra data store                   | `false` (required for AllInOne mode)                                  |
 | `allInOne.enabled`             | Enable All in One In-Memory Configuration          | `true`                                                                |
 | `allInOne.args`                | Command arguments to pass to All in One deployment | `["--memory.max-traces", "10000", "--query.base-path", "/jaeger/ui"]` |
@@ -161,6 +192,7 @@ parameters by default. The overriden parameters are specified below.
 
 | Parameter                            | Description                                    | Default                                                   |
 |--------------------------------------|------------------------------------------------|-----------------------------------------------------------|
+| `enabled`                            | Install the Prometheus sub-chart               | `true`                                                    |
 | `alertmanager.enabled`               | Install the alertmanager                       | `false`                                                   |
 | `configmapReload.prometheus.enabled` | Install the configmap-reload container         | `false`                                                   |
 | `kube-state-metrics.enabled`         | Install the kube-state-metrics sub-chart       | `false`                                                   |
@@ -181,6 +213,7 @@ parameters by default. The overriden parameters are specified below.
 
 | Parameter             | Description                                        | Default                                                              |
 |-----------------------|----------------------------------------------------|----------------------------------------------------------------------|
+| `enabled`             | Install the Grafana sub-chart                      | `true`                                                               |
 | `grafana.ini`         | Grafana's primary configuration                    | Enables anonymous login, and proxy through the frontendProxy service |
 | `adminPassword`       | Password used by `admin` user                      | `admin`                                                              |
 | `rbac.pspEnabled`     | Enable PodSecurityPolicy resources                 | `false`                                                              |

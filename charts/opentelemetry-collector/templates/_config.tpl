@@ -71,6 +71,9 @@ Build config file for deployment OpenTelemetry Collector
 {{- if .Values.presets.kubernetesAttributes.enabled }}
 {{- $config = (include "opentelemetry-collector.applyKubernetesAttributesConfig" (dict "Values" $data "config" $config) | fromYaml) }}
 {{- end }}
+{{- if .Values.presets.kubernetesEvents.enabled }}
+{{- $config = (include "opentelemetry-collector.applyKubernetesEventsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
 {{- if .Values.presets.clusterMetrics.enabled }}
 {{- $config = (include "opentelemetry-collector.applyClusterMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
 {{- end }}
@@ -181,7 +184,7 @@ receivers:
     exclude: []
     {{- else }}
     # Exclude collector container's logs. The file format is /var/log/pods/<namespace_name>_<pod_name>_<pod_uid>/<container_name>/<run_id>.log
-    exclude: [ /var/log/pods/{{ .Release.Namespace }}_{{ include "opentelemetry-collector.lowercase_chartname" . }}*_*/{{ include "opentelemetry-collector.name" . }}/*.log ]
+    exclude: [ /var/log/pods/{{ .Release.Namespace }}_{{ include "opentelemetry-collector.fullname" . }}*_*/{{ include "opentelemetry-collector.lowercase_chartname" . }}/*.log ]
     {{- end }}
     start_at: beginning
     {{- if .Values.presets.logsCollection.storeCheckpoints}}
@@ -208,7 +211,7 @@ receivers:
         timestamp:
           parse_from: attributes.time
           layout_type: gotime
-          layout: '2006-01-02T15:04:05.000000000-07:00'
+          layout: '2006-01-02T15:04:05.999999999Z07:00'
       # Parse CRI-Containerd format
       - type: regex_parser
         id: parser-containerd
@@ -271,6 +274,10 @@ receivers:
 {{- define "opentelemetry-collector.kubernetesAttributesConfig" -}}
 processors:
   k8sattributes:
+  {{- if eq .Values.mode "daemonset" }}
+    filter:
+      node_from_env_var: K8S_NODE_NAME
+  {{- end }}
     passthrough: false
     pod_association:
     - sources:
@@ -308,4 +315,19 @@ processors:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end }}
+
+{{- define "opentelemetry-collector.applyKubernetesEventsConfig" -}}
+{{- $config := mustMergeOverwrite (include "opentelemetry-collector.kubernetesEventsConfig" .Values | fromYaml) .config }}
+{{- $_ := set $config.service.pipelines.logs "receivers" (append $config.service.pipelines.logs.receivers "k8sobjects" | uniq)  }}
+{{- $config | toYaml }}
+{{- end }}
+
+{{- define "opentelemetry-collector.kubernetesEventsConfig" -}}
+receivers:
+  k8sobjects:
+    objects:
+      - name: events
+        mode: "watch"
+        group: "events.k8s.io"
 {{- end }}

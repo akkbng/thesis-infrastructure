@@ -5,13 +5,15 @@ kind: ConfigMap
 metadata:
   name: example-otelcol
   labels:
-    helm.sh/chart: opentelemetry-collector-0.49.1
+    helm.sh/chart: opentelemetry-collector-0.55.1
     app.kubernetes.io/name: otelcol
     app.kubernetes.io/instance: example
-    app.kubernetes.io/version: "0.72.0"
+    app.kubernetes.io/version: "0.76.1"
     app.kubernetes.io/managed-by: Helm
 data:
   relay: |
+    connectors:
+      spanmetrics: null
     exporters:
       logging: {}
       otlp:
@@ -29,31 +31,40 @@ data:
         size_in_percentage: 40
     processors:
       batch: {}
+      filter/ottl:
+        error_mode: ignore
+        metrics:
+          metric:
+          - name == "queueSize"
       memory_limiter:
         check_interval: 5s
         limit_percentage: 80
         spike_limit_percentage: 25
-      spanmetrics:
-        metrics_exporter: prometheus
+      transform:
+        metric_statements:
+        - context: metric
+          statements:
+          - set(description, "Measures the duration of inbound HTTP requests") where name
+            == "http.server.duration"
     receivers:
       jaeger:
         protocols:
           grpc:
-            endpoint: ${MY_POD_IP}:14250
+            endpoint: ${env:MY_POD_IP}:14250
           thrift_compact:
-            endpoint: ${MY_POD_IP}:6831
+            endpoint: ${env:MY_POD_IP}:6831
           thrift_http:
-            endpoint: ${MY_POD_IP}:14268
+            endpoint: ${env:MY_POD_IP}:14268
       otlp:
         protocols:
           grpc:
-            endpoint: ${MY_POD_IP}:4317
+            endpoint: ${env:MY_POD_IP}:4317
           http:
             cors:
               allowed_origins:
               - http://*
               - https://*
-            endpoint: ${MY_POD_IP}:4318
+            endpoint: 0.0.0.0:4318
       prometheus:
         config:
           scrape_configs:
@@ -61,9 +72,9 @@ data:
             scrape_interval: 10s
             static_configs:
             - targets:
-              - ${MY_POD_IP}:8888
+              - ${env:MY_POD_IP}:8888
       zipkin:
-        endpoint: ${MY_POD_IP}:9411
+        endpoint: ${env:MY_POD_IP}:9411
     service:
       extensions:
       - health_check
@@ -83,17 +94,19 @@ data:
           - logging
           processors:
           - memory_limiter
+          - filter/ottl
+          - transform
           - batch
           receivers:
           - otlp
-          - prometheus
+          - spanmetrics
         traces:
           exporters:
           - otlp
           - logging
+          - spanmetrics
           processors:
           - memory_limiter
-          - spanmetrics
           - batch
           receivers:
           - otlp
@@ -101,4 +114,4 @@ data:
           - zipkin
       telemetry:
         metrics:
-          address: ${MY_POD_IP}:8888
+          address: ${env:MY_POD_IP}:8888

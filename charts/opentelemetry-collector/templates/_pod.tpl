@@ -46,7 +46,7 @@ containers:
           fieldRef:
             apiVersion: v1
             fieldPath: status.podIP
-      {{- if .Values.presets.kubeletMetrics.enabled }}
+      {{- if or .Values.presets.kubeletMetrics.enabled (and .Values.presets.kubernetesAttributes.enabled (eq .Values.mode "daemonset")) }}
       - name: K8S_NODE_NAME
         valueFrom:
           fieldRef:
@@ -67,8 +67,10 @@ containers:
       httpGet:
         path: /
         port: 13133
+    {{- with .Values.resources }}
     resources:
-      {{- toYaml .Values.resources | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     volumeMounts:
       {{- if .Values.configMap.create }}
       - mountPath: /conf
