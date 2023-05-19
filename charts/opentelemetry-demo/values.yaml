@@ -41,7 +41,7 @@ default:
     # Overrides the image tag whose default is the chart appVersion.
     # The service's name will be applied to the end of this value.
     tag: ""
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     pullSecrets: []
   schedulingRules:
     nodeSelector: {}
