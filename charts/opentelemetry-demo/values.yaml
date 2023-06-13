@@ -640,6 +640,10 @@ opentelemetry-collector:
         resource_to_telemetry_conversion:
           enabled: true
         enable_open_metrics: true
+      otlp/tempo:
+        endpoint: '{{ include "otel-demo.name" . }}-tempo:4317'
+        tls:
+          insecure: true
 
     processors:
       # we can remove when this is fixed: https://github.com/open-telemetry/opentelemetry-demo/issues/737
@@ -657,14 +661,21 @@ opentelemetry-collector:
 
     connectors:
       spanmetrics:
+      servicegraph:
+        latency_histogram_buckets: [5ms, 30ms, 100ms, 500ms, 2s]
+        dimensions:
+          - span.kind
+        store:
+          ttl: 5s
+          max_items: 5000
 
     service:
       pipelines:
         traces:
           processors: [memory_limiter, batch]
-          exporters: [otlp, logging, spanmetrics]
+          exporters: [otlp, logging, spanmetrics, servicegraph, otlp/tempo]
         metrics:
-          receivers: [otlp, spanmetrics]
+          receivers: [otlp, spanmetrics, servicegraph]
           processors: [memory_limiter, filter/ottl, transform, batch]
           exporters: [prometheus, logging]
 
@@ -739,6 +750,9 @@ prometheus:
               action: keep
               regex: true
 
+tempo:
+  enabled: true
+
 grafana:
   enabled: true
   grafana.ini:
@@ -770,6 +784,7 @@ grafana:
               - url: http://localhost:8080/jaeger/ui/trace/$${__value.raw}
                 name: trace_id
                 urlDisplayLabel: View in Jaeger UI
+            httpMethod: GET
 
         - name: Jaeger
           uid: webstore-traces
@@ -777,6 +792,16 @@ grafana:
           url: 'http://{{ include "otel-demo.name" . }}-jaeger-query:16686/jaeger/ui'
           editable: true
           isDefault: false
+
+        - name: Tempo
+          type: tempo
+          uid: tempo
+          url: 'http://{{ include "otel-demo.name" . }}-tempo:3100'
+          editable: true
+          jsonData:
+            httpMethod: GET
+            serviceMap:
+            datasourceUid: 'webstore-metrics'
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1

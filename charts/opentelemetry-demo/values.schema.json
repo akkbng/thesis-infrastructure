@@ -42,6 +42,9 @@
     "prometheus": {
       "type": "object"
     },
+    "tempo": {
+      "type": "object"
+    },
     "grafana": {
       "type": "object"
     }
