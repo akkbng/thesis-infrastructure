@@ -648,6 +648,7 @@ opentelemetry-collector:
     processors:
       # we can remove when this is fixed: https://github.com/open-telemetry/opentelemetry-demo/issues/737
       transform:
+        error_mode: ignore
         metric_statements:
           - context: metric
             statements:
@@ -661,13 +662,28 @@ opentelemetry-collector:
 
     connectors:
       spanmetrics:
+        histogram:
+          explicit:
+            buckets: [100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms]
+        dimensions:
+          - name: http.method
+            default: GET
+          - name: http.status_code
+        dimensions_cache_size: 1000
+        aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"    
+        metrics_flush_interval: 15s 
       servicegraph:
         latency_histogram_buckets: [5ms, 30ms, 100ms, 500ms, 2s]
         dimensions:
-          - span.kind
+          - tilt.dataDisclosed.category
+          - tilt.dataDisclosed.purposes.purpose
+          - tilt.dataDisclosed.catorgory
         store:
           ttl: 5s
           max_items: 5000
+        virtual_node_peer_attributes:
+          - db.name
+          - rpc.service
 
     service:
       pipelines:
@@ -801,7 +817,7 @@ grafana:
           jsonData:
             httpMethod: GET
             serviceMap:
-            datasourceUid: 'webstore-metrics'
+            datasourceUid: webstore-metrics
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
