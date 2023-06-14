@@ -677,7 +677,6 @@ opentelemetry-collector:
         dimensions:
           - tilt.dataDisclosed.category
           - tilt.dataDisclosed.purposes.purpose
-          - tilt.dataDisclosed.catorgory
         store:
           ttl: 5s
           max_items: 5000
