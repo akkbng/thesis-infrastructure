@@ -660,6 +660,18 @@ opentelemetry-collector:
           metric:
             - 'name == "queueSize"'
       transparency:
+      # tail_sampling:
+      #   decision_wait: 10s
+      #   num_traces: 100
+      #   expected_new_traces_per_sec: 10
+      #   policies:
+      #     [
+      #       {
+      #         name: test-policy-12,
+      #         type: boolean_attribute,
+      #         boolean_attribute: {key: tilt.check_flag, value: true}
+      #       },
+      #     ]
 
     connectors:
       spanmetrics:
@@ -678,6 +690,7 @@ opentelemetry-collector:
         dimensions:
           - tilt.dataDisclosed.category
           - tilt.dataDisclosed.purposes.purpose
+          - tilt.check_flag
         store:
           ttl: 5s
           max_items: 5000
@@ -688,12 +701,12 @@ opentelemetry-collector:
     service:
       pipelines:
         traces:
-          processors: [memory_limiter, transparency, batch]
-          exporters: [otlp, logging, spanmetrics, servicegraph, otlp/tempo]
+          processors: [transparency, batch]
+          exporters: [otlp, spanmetrics, servicegraph, otlp/tempo]
         metrics:
           receivers: [otlp, spanmetrics, servicegraph]
-          processors: [memory_limiter, filter/ottl, transform, batch]
-          exporters: [prometheus, logging]
+          processors: [filter/ottl, transform, batch]
+          exporters: [prometheus]
 
 jaeger:
   enabled: true
