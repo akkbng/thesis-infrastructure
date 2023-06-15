@@ -659,6 +659,7 @@ opentelemetry-collector:
         metrics:
           metric:
             - 'name == "queueSize"'
+      transparency:
 
     connectors:
       spanmetrics:
@@ -687,7 +688,7 @@ opentelemetry-collector:
     service:
       pipelines:
         traces:
-          processors: [memory_limiter, batch]
+          processors: [memory_limiter, transparency, batch]
           exporters: [otlp, logging, spanmetrics, servicegraph, otlp/tempo]
         metrics:
           receivers: [otlp, spanmetrics, servicegraph]
