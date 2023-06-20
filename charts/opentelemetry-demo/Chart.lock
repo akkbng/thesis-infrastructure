@@ -4,15 +4,15 @@ dependencies:
   version: 0.56.0
 - name: jaeger
   repository: https://jaegertracing.github.io/helm-charts
-  version: 0.69.1
+  version: 0.71.4
 - name: prometheus
   repository: https://prometheus-community.github.io/helm-charts
   version: 20.2.0
 - name: grafana
   repository: https://grafana.github.io/helm-charts
-  version: 6.52.8
+  version: 6.57.3
 - name: tempo
   repository: https://grafana.github.io/helm-charts
   version: 1.3.1
-digest: sha256:0a92040d98aec2c3bf32f02cb2dce2501bd08aab6828d13abbc106243552ae62
-generated: "2023-06-13T15:07:14.14823+02:00"
+digest: sha256:1d55074aa34e9a5677a48c3ba22fc812c4b4cb4466febc6d913958bbf3096e56
+generated: "2023-06-20T16:30:12.792972+02:00"

@@ -701,7 +701,7 @@ opentelemetry-collector:
     service:
       pipelines:
         traces:
-          processors: [transparency, batch]
+          processors: [memory_limiter, transparency, batch]
           exporters: [otlp, spanmetrics, servicegraph, otlp/tempo]
         metrics:
           receivers: [otlp, spanmetrics, servicegraph]

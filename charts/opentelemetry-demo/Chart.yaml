@@ -13,7 +13,7 @@ dependencies:
     repository: file://../opentelemetry-collector
     condition: observability.otelcol.enabled
   - name: jaeger
-    version: 0.69.1
+    version: 0.71.4
     repository: https://jaegertracing.github.io/helm-charts
     condition: jaeger.enabled
   - name: prometheus
@@ -21,7 +21,7 @@ dependencies:
     repository: https://prometheus-community.github.io/helm-charts
     condition: prometheus.enabled
   - name: grafana
-    version: 6.52.8
+    version: 6.57.3
     repository: https://grafana.github.io/helm-charts
     condition: grafana.enabled
   - name: tempo
