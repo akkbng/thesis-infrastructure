@@ -691,6 +691,7 @@ opentelemetry-collector:
           - tilt.dataDisclosed.category
           - tilt.dataDisclosed.purposes.purpose
           - tilt.check_flag
+          - tilt.dataDisclosed.legalBases.reference
         store:
           ttl: 5s
           max_items: 5000
@@ -794,6 +795,8 @@ grafana:
     server:
       root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
       serve_from_sub_path: true
+    plugins:
+      plugin_admin_enabled: true
   adminPassword: admin
   datasources:
     datasources.yaml:
