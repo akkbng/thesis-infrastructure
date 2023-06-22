@@ -32,6 +32,35 @@
         "type": "tempo",
         "uid": "tempo"
       },
+      "gridPos": {
+        "h": 19,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "key": "Q-c828debd-4535-4427-ae4f-fd76a67a6ef7-0",
+          "limit": 20,
+          "query": "",
+          "queryType": "serviceMap",
+          "refId": "A",
+          "serviceMapQuery": "{server_tilt_check_flag=\"${tilt_check_flag}\"}"
+        }
+      ],
+      "title": "Service Graph - Filtered",
+      "type": "nodeGraph"
+    },
+    {
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -62,9 +91,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
-        "w": 24,
-        "x": 0,
+        "h": 19,
+        "w": 13,
+        "x": 11,
         "y": 0
       },
       "id": 2,
@@ -88,7 +117,7 @@
             "uid": "tempo"
           },
           "limit": 20,
-          "query": "{.service.name=\"${service_name}\" && .tilt.check_flag=${tilt_check_flag} && .tilt.dataDisclosed.category=\"${personal_data_category}\"}",
+          "query": "{.service.name=\"${service_name}\" && .tilt.check_flag=${tilt_check_flag} || .tilt.dataDisclosed.category=\"${personal_data_category}\"}",
           "queryType": "traceql",
           "refId": "A"
         }
@@ -102,27 +131,25 @@
         "uid": "tempo"
       },
       "gridPos": {
-        "h": 19,
+        "h": 18,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 19
       },
-      "id": 1,
+      "id": 3,
       "targets": [
         {
           "datasource": {
             "type": "tempo",
             "uid": "tempo"
           },
-          "key": "Q-c828debd-4535-4427-ae4f-fd76a67a6ef7-0",
           "limit": 20,
-          "query": "",
           "queryType": "serviceMap",
-          "refId": "A",
-          "serviceMapQuery": "{server_tilt_check_flag=\"${tilt_check_flag}\"}"
+          "refId": "A"
         }
       ],
-      "title": "New Panel",
+      "title": "Service Dependency Graph",
+      "transparent": true,
       "type": "nodeGraph"
     }
   ],
@@ -136,8 +163,8 @@
       {
         "current": {
           "selected": true,
-          "text": "paymentservice",
-          "value": "paymentservice"
+          "text": "adservice",
+          "value": "adservice"
         },
         "datasource": {
           "type": "prometheus",
@@ -188,8 +215,8 @@
       {
         "current": {
           "selected": true,
-          "text": "zip code of the order",
-          "value": "zip code of the order"
+          "text": "user id",
+          "value": "user id"
         },
         "datasource": {
           "type": "prometheus",
@@ -214,12 +241,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Service graph dashboard",
+  "title": "Transparency dashboard",
   "uid": "lrA4WTuVk",
   "version": 2,
   "weekStart": ""
