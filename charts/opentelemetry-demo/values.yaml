@@ -836,7 +836,9 @@ grafana:
           jsonData:
             httpMethod: GET
             serviceMap:
-            datasourceUid: webstore-metrics
+              datasourceUid: 'webstore-metrics'
+            nodeGraph:
+              enabled: true
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1

@@ -145,7 +145,7 @@ image:
   repository: ghcr.io/akkbng/otel-transparency-collector
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev-94d05b9e6936f23a2f95c8728b51761db5e4d018"
+  tag: "dev-d1dccf1d7ef91e77d6395a996cc5ffbcc2062bed"
   # When digest is set to a non-empty value, images will be pulled by digest (regardless of tag value).
   digest: ""
 imagePullSecrets: []
