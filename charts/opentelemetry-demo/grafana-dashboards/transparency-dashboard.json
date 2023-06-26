@@ -80,7 +80,7 @@
           "serviceMapQuery": "{server_tilt_dataDisclosed_category=\"${personal_data_category}\"}"
         }
       ],
-      "title": "Service Graph - Filtered",
+      "title": "Service Graph - Filtered by Data Categories",
       "type": "nodeGraph"
     },
     {
