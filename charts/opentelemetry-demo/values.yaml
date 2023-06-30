@@ -668,16 +668,13 @@ opentelemetry-collector:
             {
               name: tilt-check-policy,
               type: transparency_attribute
-            }
+            },
+            {
+              name: randomized-policy,
+              type: probabilistic,
+              probabilistic: {sampling_percentage: 25}
+            },
           ]
-      # tail_sampling:  
-      #   policies:
-      #     [
-      #       {
-      #         name: tilt-check-policy,
-      #         type: always_sample
-      #       }
-      #     ]
 
 
     connectors:

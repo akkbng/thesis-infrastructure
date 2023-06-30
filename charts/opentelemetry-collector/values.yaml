@@ -145,10 +145,9 @@ image:
   repository: ghcr.io/akkbng/otel-transparency-collector
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev-868929fd0fa359cc055f283666e8d5a211f1c2c2" #  tail based sampling with new transparency policy
+  tag: "dev-ab6b3acb7094382c30518b4326328a9ac3b4ff84" #  tail based sampling with new transparency policy - works
 
   # "dev-74fecaab44293a6e9f0a31a2b89a724ae0c81d3a" # with transprancy - tailbased sampling new config - removed original tail based sampler processor
-  # "dev-66242110aa7b958402e226ccc47aa99ef417aa49" # transprancy with tailbased sampling - doesn't work I don't understand why
   
   # "fe832dd6380f493afd0146f4fabf0ef4cf1dd9a2" # Base image - without tailbased sampling integrated in transparency
   # When digest is set to a non-empty value, images will be pulled by digest (regardless of tag value).
