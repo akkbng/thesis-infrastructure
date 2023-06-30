@@ -660,18 +660,25 @@ opentelemetry-collector:
           metric:
             - 'name == "queueSize"'
       transparency:
-      # tail_sampling:
-      #   decision_wait: 10s
-      #   num_traces: 100
-      #   expected_new_traces_per_sec: 10
+        decision_wait: 30s
+        num_traces: 50000
+        expected_new_traces_per_sec: 0
+        policies:
+          [
+            {
+              name: tilt-check-policy,
+              type: transparency_attribute
+            }
+          ]
+      # tail_sampling:  
       #   policies:
       #     [
       #       {
-      #         name: test-policy-12,
-      #         type: boolean_attribute,
-      #         boolean_attribute: {key: tilt.check_flag, value: true}
-      #       },
+      #         name: tilt-check-policy,
+      #         type: always_sample
+      #       }
       #     ]
+
 
     connectors:
       spanmetrics:
@@ -693,7 +700,7 @@ opentelemetry-collector:
           - tilt.check_flag
           - tilt.dataDisclosed.legalBases.reference
         store:
-          ttl: 5s
+          ttl: 30s
           max_items: 5000
         virtual_node_peer_attributes:
           - db.name
