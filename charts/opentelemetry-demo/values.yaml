@@ -669,11 +669,11 @@ opentelemetry-collector:
               name: tilt-check-policy,
               type: transparency_attribute
             },
-            {
-              name: randomized-policy,
-              type: probabilistic,
-              probabilistic: {sampling_percentage: 25}
-            },
+            # {
+            #   name: randomized-policy,
+            #   type: probabilistic,
+            #   probabilistic: {sampling_percentage: 25}
+            # },
           ]
 
 
