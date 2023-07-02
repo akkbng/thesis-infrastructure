@@ -171,6 +171,13 @@
         "y": 19
       },
       "id": 4,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "TILT File",
+          "url": "https://github.com/akkbng/opentelemetry-astronomy-shop/blob/main/tilt.json"
+        }
+      ],
       "targets": [
         {
           "datasource": {
@@ -197,8 +204,8 @@
       {
         "current": {
           "selected": false,
-          "text": "order id",
-          "value": "order id"
+          "text": "Credit Card",
+          "value": "Credit Card"
         },
         "datasource": {
           "type": "prometheus",
@@ -249,8 +256,8 @@
       {
         "current": {
           "selected": false,
-          "text": "true",
-          "value": "true"
+          "text": "false",
+          "value": "false"
         },
         "datasource": {
           "type": "prometheus",
@@ -275,8 +282,8 @@
       {
         "current": {
           "selected": false,
-          "text": "cd9486dd90e3f9b51598d09c886c081",
-          "value": "cd9486dd90e3f9b51598d09c886c081"
+          "text": "8a8d0ced3f7c840c8f8bbe741d3fdf5b",
+          "value": "8a8d0ced3f7c840c8f8bbe741d3fdf5b"
         },
         "hide": 2,
         "includeAll": false,

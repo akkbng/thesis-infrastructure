@@ -145,11 +145,9 @@ image:
   repository: ghcr.io/akkbng/otel-transparency-collector
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev-7e3228be56dabe490249da6c4b560fcaadd21c49" #  tail based sampling with new transparency policy - fetch tilt from url and make sampling decision (new fetching logic)
-  #"dev-437032e907b3d58808028c8bfbc93e73d3d9d055" #  tail based sampling with new transparency policy - fetch tilt from url and make sampling decision - works but takes only the first data disclosed block
- 
-  # "dev-43689618110a4eb9b896b08418234df18918709f" #  tail based sampling with new transparency policy - add tilt_check to every span 
-  # "3ce44002c90c3d36b9e2f1f5549aec5081106dd1" # Base working image - tail based sampling with new transparency policy - works
+  tag: "d0a166cf5784573c7141d827fcf0fecc774d9355" # fixed sampling returns
+  #"02f99c38ce4f3f03a8ff2f845f1faf31913e1a8b" # Base working image - tail based sampling with new transparency policy/fetch tilt from url and make sampling decision - works
+  
   # When digest is set to a non-empty value, images will be pulled by digest (regardless of tag value).
   digest: ""
 imagePullSecrets: []
