@@ -598,7 +598,7 @@ opentelemetry-collector:
   mode: deployment
   resources:
     limits:
-      memory: 125Mi
+      memory: 300Mi
   service:
     type: ClusterIP
   ports:
@@ -666,14 +666,46 @@ opentelemetry-collector:
         policies:
           [
             {
-              name: tilt-check-policy,
-              type: transparency_attribute
+            name: example-composite-policy,
+            type: composite,
+            composite:
+              {
+                max_total_spans_per_second: 1000,
+                policy_order: [tilt-check-policy, personal-data-category-policy, always-sample-policy],
+                composite_sub_policy:
+                  [
+                    {
+                      name: tilt-check-policy,
+                      type: transparency_attribute,
+                    },
+                    {
+                      name: personal-data-category-policy,
+                      type: ottl_condition,
+                      ottl_condition: {
+                          error_mode: ignore,
+                          span: [
+                              "attributes[\"tilt.dataDisclosed.category\"] != nil",
+                          ]
+                      }
+                    },
+                    {
+                      name: test-composite-policy-3,
+                      type: always_sample
+                    }
+                  ],
+                rate_allocation:
+                  [
+                    {
+                      policy: tilt-check-policy,
+                      percent: 50
+                    },
+                    {
+                      policy: personal-data-category-policy,
+                      percent: 25
+                    }
+                  ]
+              }
             },
-            # {
-            #   name: randomized-policy,
-            #   type: probabilistic,
-            #   probabilistic: {sampling_percentage: 25}
-            # },
           ]
 
 

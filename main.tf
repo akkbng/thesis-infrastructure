@@ -3,6 +3,36 @@ resource "google_service_account" "default" {
   display_name = "Service Account"
 }
 
+resource "google_project_iam_binding" "service_account_role1" {
+  project = var.project_name
+  role    = "roles/monitoring.metricWriter"
+
+  members = [
+    //the service account email I created in the previous step
+    "serviceAccount:${google_service_account.default.email}"
+  ]
+}
+
+resource "google_project_iam_binding" "service_account_role2" {
+  project = var.project_name
+  role    = "roles/logging.logWriter"
+
+  members = [
+    //the service account email I created in the previous step
+    "serviceAccount:${google_service_account.default.email}"
+  ]
+}
+
+resource "google_project_iam_binding" "service_account_role3" {
+  project = var.project_name
+  role    = "roles/stackdriver.resourceMetadata.writer"
+
+  members = [
+    //the service account email I created in the previous step
+    "serviceAccount:${google_service_account.default.email}"
+  ]
+}
+
 resource "google_container_cluster" "primary" {
   name     = "my-gke-cluster"
   location = var.region
