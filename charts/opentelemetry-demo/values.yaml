@@ -689,7 +689,7 @@ opentelemetry-collector:
                       }
                     },
                     {
-                      name: test-composite-policy-3,
+                      name: always-sample-policy,
                       type: always_sample
                     }
                   ],
